@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Giftly homepage
 
-## Getting Started
+A frontend gift-card storefront built with Next.js App Router, TypeScript,
+Tailwind CSS v4, shadcn/ui with Base UI primitives, and Phosphor icons.
 
-First, run the development server:
+## Run locally
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+From the `giftly` directory, run `pnpm install` and `pnpm dev`, then open
+http://localhost:3000. Use `pnpm build` and `pnpm start` for a production preview.
+
+## Structure
+
+- `app/page.tsx` composes the homepage sections as a Server Component.
+- `app/layout.tsx` owns metadata, the local Geist font, and the shared site shell.
+- `components/home/` contains the hero, interactive collection, and how-it-works section.
+- `components/gift-cards/card-artwork.tsx` supplies reusable, scalable brand artwork.
+- `components/layout/` contains the shared header and footer.
+- `components/ui/` contains shadcn-style Button and Dialog primitives built on Base UI.
+- `lib/gift-cards.ts` holds typed demo catalogue data and naira formatting.
+- `app/globals.css` holds the theme tokens and custom artwork/responsive styling.
+
+Client rendering is limited to the navigation dialogs and interactive catalogue.
+Category filters and previews operate locally. The dialogs use Base UI focus
+management, keyboard dismissal, and accessible titles. Motion respects the
+system's reduced-motion preference.
+
+## Visual conventions
+
+Shared theme tokens in `app/globals.css` define neutral surfaces, the warm brand
+accent, spacing, and corner radii. Standard buttons are 44px tall, primary hero
+and banner links use the same 48px large variant, and only filter controls use
+the pill shape. Keep these rules in `components/ui/button.tsx` instead of adding
+individual size or radius overrides. Dialog titles and descriptions also have
+shared defaults. Main sections use 64px vertical spacing on mobile and 80px on
+larger screens; cards use 24px content padding and 16px corners. Brand artwork
+keeps its own colours within the neutral interface.
+
+## Review scope
+
+This phase implements the homepage only. The product buttons open previews;
+the cart shows an empty state. Product, cart, and checkout pages, purchases,
+email delivery, authentication, and payment integrations are not implemented.
+Catalogue prices are demonstration content. Brand artwork is illustrative.
+
+Geist is bundled locally from the existing project's font cache, so builds do
+not require a Google Fonts request. Upstream font and licensing information:
+https://github.com/vercel/geist-font
+
+## Checks
+
+```sh
+pnpm exec tsc --noEmit
+pnpm lint
+pnpm build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For visual review, check the page at mobile, tablet, and desktop widths. Try each
+category filter, open and dismiss every card preview, and open the empty cart.
+Check keyboard focus, Escape dismissal, and reduced-motion behaviour.
