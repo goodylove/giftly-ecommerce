@@ -29,3 +29,7 @@ export const categories = ["All cards", "Shopping", "Gaming", "Entertainment", "
 export type CategoryFilter = (typeof categories)[number];
 const naira = new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 });
 export function formatNaira(amount: number) { return naira.format(amount); }
+
+export function getGiftCard(id: string): GiftCard | undefined {
+  return giftCards.find((card) => card.id === id);
+}
