@@ -3,9 +3,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowLeftIcon } from "@phosphor-icons/react/ssr";
 import { CardArtwork } from "@/components/gift-cards/card-artwork";
-import { AddToCartButton } from "@/components/gift-cards/add-to-cart-button";
+import { DenominationPicker } from "@/components/gift-cards/denomination-picker";
 import { Badge } from "@/components/ui/badge";
-import { formatNaira, getGiftCard, giftCards } from "@/lib/gift-cards";
+import { getGiftCard, giftCards } from "@/lib/gift-cards";
 
 export function generateStaticParams() {
   return giftCards.map((card) => ({ id: card.id }));
@@ -37,11 +37,7 @@ export default async function GiftCardDetailPage(props: PageProps<"/gift-cards/[
           </div>
           <h1 className="detail-title">{card.name}</h1>
           <p className="detail-description">{card.description}</p>
-          <div className="detail-price-row">
-            <span className="text-muted-foreground">Price</span>
-            <span className="font-semibold">{formatNaira(card.startingPrice)}</span>
-          </div>
-          <AddToCartButton card={card} />
+          <DenominationPicker card={card} />
         </div>
       </div>
     </section>

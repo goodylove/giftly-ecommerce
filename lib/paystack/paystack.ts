@@ -39,3 +39,29 @@ export async function initializePaystackTransaction({
     throw error;
   }
 }
+
+export async function verifyPaystackTransaction(reference: string) {
+  try {
+    const response = await fetch(
+      `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+        },
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.status) {
+      throw new Error(
+        `Failed to verify Paystack transaction: ${data.message}`,
+      );
+    }
+
+    return data.data as { status: string; amount: number; reference: string };
+  } catch (error) {
+    console.error("Error verifying Paystack transaction:", error);
+    throw error;
+  }
+}

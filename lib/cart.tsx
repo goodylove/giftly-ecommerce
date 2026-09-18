@@ -3,6 +3,7 @@ import { getGiftCard, type GiftCardBrand } from "@/lib/gift-cards";
 
 export interface CartItem {
   id: GiftCardBrand;
+  denomination: number;
   quantity: number;
 }
 
@@ -16,33 +17,48 @@ interface CartState {
 
 type CartAction =
   | { type: "hydrate"; items: CartItem[] }
-  | { type: "add"; id: GiftCardBrand; quantity: number }
-  | { type: "setQuantity"; id: GiftCardBrand; quantity: number }
-  | { type: "remove"; id: GiftCardBrand }
+  | { type: "add"; id: GiftCardBrand; denomination: number; quantity: number }
+  | { type: "setQuantity"; id: GiftCardBrand; denomination: number; quantity: number }
+  | { type: "remove"; id: GiftCardBrand; denomination: number }
   | { type: "clear" };
+
+// A brand can appear more than once in the cart at different denominations, so
+// line items are identified by (id, denomination) together, not id alone.
+function isSameLine(item: CartItem, id: GiftCardBrand, denomination: number) {
+  return item.id === id && item.denomination === denomination;
+}
 
 export function reducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "hydrate":
       return { items: action.items, hydrated: true };
     case "add": {
-      const existing = state.items.find((item) => item.id === action.id);
+      const existing = state.items.find((item) => isSameLine(item, action.id, action.denomination));
       const items = existing
         ? state.items.map((item) =>
-          item.id === action.id ? { ...item, quantity: item.quantity + action.quantity } : item,
-        )
-        : [...state.items, { id: action.id, quantity: action.quantity }];
+            isSameLine(item, action.id, action.denomination)
+              ? { ...item, quantity: item.quantity + action.quantity }
+              : item,
+          )
+        : [...state.items, { id: action.id, denomination: action.denomination, quantity: action.quantity }];
       return { ...state, items };
     }
     case "setQuantity": {
       const items =
         action.quantity <= 0
-          ? state.items.filter((item) => item.id !== action.id)
-          : state.items.map((item) => (item.id === action.id ? { ...item, quantity: action.quantity } : item));
+          ? state.items.filter((item) => !isSameLine(item, action.id, action.denomination))
+          : state.items.map((item) =>
+              isSameLine(item, action.id, action.denomination)
+                ? { ...item, quantity: action.quantity }
+                : item,
+            );
       return { ...state, items };
     }
     case "remove":
-      return { ...state, items: state.items.filter((item) => item.id !== action.id) };
+      return {
+        ...state,
+        items: state.items.filter((item) => !isSameLine(item, action.id, action.denomination)),
+      };
     case "clear":
       return { ...state, items: [] };
     default:
@@ -64,6 +80,8 @@ export function readStoredCart(): CartItem[] {
         typeof item.id === "string" &&
         Number.isInteger(item.quantity) &&
         item.quantity > 0 &&
+        Number.isInteger(item.denomination) &&
+        item.denomination > 0 &&
         getGiftCard(item.id) !== undefined
       );
     });
@@ -71,4 +89,3 @@ export function readStoredCart(): CartItem[] {
     return [];
   }
 }
-

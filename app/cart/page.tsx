@@ -24,7 +24,7 @@ export default function CartPage() {
         <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_320px]">
           <ul className="flex flex-col gap-6">
             {items.map((item) => (
-              <CartLineItem key={item.id} item={item} />
+              <CartLineItem key={`${item.id}-${item.denomination}`} item={item} />
             ))}
           </ul>
 

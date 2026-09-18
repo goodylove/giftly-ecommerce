@@ -12,7 +12,7 @@ export function CartLineItem({ item, compact }: { item: CartItem; compact?: bool
   const card = getGiftCard(item.id);
   if (!card) return null;
 
-  const lineTotal = formatNaira(card.startingPrice * item.quantity);
+  const lineTotal = formatNaira(item.denomination * item.quantity);
 
   return (
     <li className="flex items-start gap-3 p-2">
@@ -36,7 +36,7 @@ export function CartLineItem({ item, compact }: { item: CartItem; compact?: bool
               size="icon-xs"
               className="shrink-0"
               aria-label={`Remove ${card.name} from cart`}
-              onClick={() => remove(item.id)}
+              onClick={() => remove(item.id, item.denomination)}
             >
               <XIcon />
             </Button>
@@ -45,7 +45,7 @@ export function CartLineItem({ item, compact }: { item: CartItem; compact?: bool
 
         {/* Row 2: unit price on the left, quantity + line total on the right. */}
         <div className="mt-2 flex items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground">{formatNaira(card.startingPrice)} each</span>
+          <span className="text-xs text-muted-foreground">{formatNaira(item.denomination)} each</span>
           {compact ? (
             <span className="text-sm font-semibold">
               ×{item.quantity} · {lineTotal}
@@ -58,7 +58,7 @@ export function CartLineItem({ item, compact }: { item: CartItem; compact?: bool
                   variant="outline"
                   size="icon-xs"
                   aria-label={`Decrease quantity of ${card.name}`}
-                  onClick={() => setQuantity(item.id, item.quantity - 1)}
+                  onClick={() => setQuantity(item.id, item.denomination, item.quantity - 1)}
                 >
                   <MinusIcon />
                 </Button>
@@ -68,7 +68,7 @@ export function CartLineItem({ item, compact }: { item: CartItem; compact?: bool
                   variant="outline"
                   size="icon-xs"
                   aria-label={`Increase quantity of ${card.name}`}
-                  onClick={() => setQuantity(item.id, item.quantity + 1)}
+                  onClick={() => setQuantity(item.id, item.denomination, item.quantity + 1)}
                 >
                   <PlusIcon />
                 </Button>

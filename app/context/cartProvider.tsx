@@ -1,7 +1,7 @@
 "use client";
 
 import { CartItem, readStoredCart, reducer, STORAGE_KEY } from "@/lib/cart";
-import { getGiftCard, GiftCardBrand } from "@/lib/gift-cards";
+import { GiftCardBrand } from "@/lib/gift-cards";
 import { createContext, ReactNode, useContext, useEffect, useMemo, useReducer } from "react";
 
 
@@ -9,9 +9,9 @@ interface CartContextValue {
     items: CartItem[];
     count: number;
     subtotal: number;
-    add: (id: GiftCardBrand, quantity?: number) => void;
-    setQuantity: (id: GiftCardBrand, quantity: number) => void;
-    remove: (id: GiftCardBrand) => void;
+    add: (id: GiftCardBrand, denomination: number, quantity?: number) => void;
+    setQuantity: (id: GiftCardBrand, denomination: number, quantity: number) => void;
+    remove: (id: GiftCardBrand, denomination: number) => void;
     clear: () => void;
 }
 
@@ -37,7 +37,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     const count = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items]);
     const subtotal = useMemo(
-        () => items.reduce((sum, item) => sum + (getGiftCard(item.id)?.startingPrice ?? 0) * item.quantity, 0),
+        () => items.reduce((sum, item) => sum + item.denomination * item.quantity, 0),
         [items],
     );
 
@@ -46,9 +46,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
             items,
             count,
             subtotal,
-            add: (id, quantity = 1) => dispatch({ type: "add", id, quantity }),
-            setQuantity: (id, quantity) => dispatch({ type: "setQuantity", id, quantity }),
-            remove: (id) => dispatch({ type: "remove", id }),
+            add: (id, denomination, quantity = 1) => dispatch({ type: "add", id, denomination, quantity }),
+            setQuantity: (id, denomination, quantity) => dispatch({ type: "setQuantity", id, denomination, quantity }),
+            remove: (id, denomination) => dispatch({ type: "remove", id, denomination }),
             clear: () => dispatch({ type: "clear" }),
         }),
         [items, count, subtotal],

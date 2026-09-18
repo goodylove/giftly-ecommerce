@@ -30,7 +30,7 @@ export function CartSheet() {
         ) : (
           <ul className="flex flex-col gap-6">
             {items.map((item) => (
-              <CartLineItem key={item.id} item={item} />
+              <CartLineItem key={`${item.id}-${item.denomination}`} item={item} />
             ))}
           </ul>
         )}
