@@ -35,7 +35,7 @@ export function HeroCards({ cards }: { cards: GiftCard[] }) {
 
   return (
     <div
-      className="hero-visual"
+      className="hero-visual mt-5"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       aria-hidden="true"

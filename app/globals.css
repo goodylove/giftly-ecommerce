@@ -138,19 +138,6 @@
   .skip-link:focus { transform: translateY(0); }
 
   .hero-section { position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
-  /* Glow sits behind the card stage on the right rather than centred, so the
-     composition is weighted like the layout instead of symmetrical. */
-  .hero-section::before {
-    content: "";
-    position: absolute;
-    top: -140px;
-    right: -80px;
-    z-index: 0;
-    width: 780px;
-    height: 640px;
-    background: radial-gradient(closest-side, color-mix(in oklch, var(--brand) 16%, transparent), transparent 72%);
-    pointer-events: none;
-  }
   .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: center; padding-block: 76px 84px; }
   .hero-copy { max-width: 560px; }
   .hero-copy h1 { font-family: var(--font-heading); font-size: clamp(38px, 4.4vw, 62px); line-height: 1.06; letter-spacing: -0.03em; font-weight: 600; text-wrap: balance; }
@@ -166,7 +153,22 @@
 
   /* Card stage: real catalogue artwork, cascaded in 3D and parallaxed off the pointer. */
   .hero-visual { position: relative; display: flex; align-items: center; justify-content: center; min-height: 470px; perspective: 1400px; }
-  .hero-stage { position: relative; width: 380px; height: 424px; transform-style: preserve-3d; }
+  /* The glow belongs to the card stage, not the section — anchoring it here means it
+     follows the cards when the layout stacks, and sizes off the container instead of
+     fixed pixels so it scales at every breakpoint. */
+  .hero-visual::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 0;
+    width: min(640px, 145%);
+    aspect-ratio: 1 / 0.88;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, color-mix(in oklch, var(--brand) 24%, transparent), transparent 72%);
+    pointer-events: none;
+  }
+  .hero-stage { position: relative; z-index: 1; width: 380px; height: 424px; transform-style: preserve-3d; }
   /* Cards are 260px wide => ~161px tall. The 128px vertical step clears each card's
      centred logo band, so no brand mark is ever sliced by the one in front. */
   .hero-card { position: absolute; width: 260px; border-radius: var(--radius-xl); overflow: hidden; transform-style: preserve-3d; will-change: transform; }
@@ -216,7 +218,50 @@
   .detail-description { margin-top: 12px; color: var(--muted-foreground); font-size: 15px; line-height: 1.7; }
   .detail-price-row { display: flex; align-items: center; justify-content: space-between; margin-block: 24px; padding-block: 16px; border-block: 1px solid var(--border); font-size: 14px; }
 
-  .checkout-steps { display: flex; align-items: flex-start; justify-content: center; gap: 12px; margin-block: 8px 40px; }
+  /* Two-column checkout: step content left, a summary that stays put on the right. */
+  .checkout-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; margin-bottom: 28px; }
+  .checkout-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 28px; align-items: start; }
+  .checkout-panel { padding: 28px; border: 1px solid var(--border); border-radius: var(--radius-2xl); background: var(--card); }
+  .checkout-panel-head h2 { font-family: var(--font-heading); font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+  .checkout-panel-head p { margin-top: 5px; font-size: 13px; line-height: 1.6; color: var(--muted-foreground); }
+  .checkout-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 24px; }
+  .field--full { grid-column: 1 / -1; }
+  .field label { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 500; }
+  .field-optional { font-weight: 400; color: var(--muted-foreground); }
+  .field-hint { margin-top: 6px; font-size: 12px; line-height: 1.5; color: var(--muted-foreground); }
+  .checkout-review { margin-top: 22px; padding: 18px; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--background); }
+  .checkout-review-row { display: flex; justify-content: space-between; gap: 20px; padding-block: 7px; font-size: 13.5px; }
+  .checkout-review-row > span:first-child { flex-shrink: 0; color: var(--muted-foreground); }
+  .checkout-review-row > span:last-child { text-align: right; font-weight: 500; overflow-wrap: anywhere; }
+  .checkout-review-message { font-weight: 400 !important; color: var(--muted-foreground); font-style: italic; }
+  .checkout-edit { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 12.5px; color: var(--brand); }
+  .checkout-edit:disabled { opacity: 0.5; }
+  .checkout-payment { display: flex; gap: 11px; margin-top: 20px; padding: 15px 16px; border-radius: var(--radius-xl); background: var(--brand-soft); }
+  .checkout-payment svg { flex-shrink: 0; margin-top: 1px; color: var(--brand); }
+  .checkout-payment p { font-size: 12.5px; line-height: 1.6; color: var(--foreground); }
+
+  .checkout-summary { position: sticky; top: 24px; padding: 22px; border: 1px solid var(--border); border-radius: var(--radius-2xl); background: var(--card); }
+  .checkout-summary-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .checkout-summary-head h2 { font-family: var(--font-heading); font-size: 15px; font-weight: 600; }
+  .checkout-summary-head span { font-size: 12px; color: var(--muted-foreground); }
+  .checkout-summary-items { display: flex; flex-direction: column; gap: 10px; max-height: 320px; overflow-y: auto; }
+  .checkout-summary-row { display: flex; justify-content: space-between; gap: 16px; padding-block: 3px; font-size: 13.5px; }
+  .checkout-summary-row > span:first-child { color: var(--muted-foreground); }
+  .checkout-summary-total { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; font-size: 15px; font-weight: 600; }
+  .checkout-summary-total > span:last-child { font-family: var(--font-heading); font-size: 20px; letter-spacing: -0.4px; }
+  .checkout-summary-note { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 18px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted-foreground); }
+  .checkout-summary-note svg { color: var(--brand); }
+
+  .empty-cart { padding-block: 26px 10px; text-align: center; }
+  .empty-cart-art { position: relative; display: inline-flex; width: 118px; height: 118px; align-items: center; justify-content: center; }
+  .empty-cart-blob { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .empty-cart-blob .blob-near { fill: color-mix(in oklch, var(--brand) 10%, var(--card)); }
+  .empty-cart-blob .blob-far { fill: color-mix(in oklch, var(--brand) 5%, var(--card)); }
+  .empty-cart-icon { position: relative; color: color-mix(in oklch, var(--foreground) 42%, var(--card)); }
+  .empty-cart-title { margin-top: 12px; font-family: var(--font-heading); font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+  .empty-cart-text { margin: 9px auto 0; max-width: 310px; font-size: 13.5px; line-height: 1.7; color: var(--muted-foreground); text-wrap: pretty; }
+
+  .checkout-steps { display: flex; align-items: flex-start; justify-content: center; gap: 12px; }
   .checkout-step { display: flex; align-items: center; gap: 12px; }
   .checkout-step + .checkout-step::before { content: ""; width: 56px; height: 1px; background: var(--border); align-self: center; }
   .checkout-step-number { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 999px; border: 1px solid var(--border); font-size: 13px; color: var(--muted-foreground); transition: background-color 160ms, border-color 160ms, color 160ms; }
@@ -244,6 +289,9 @@
   .hero-description { max-width: 540px; }
   .hero-visual { min-width: 0; min-height: 380px; }
   .catalogue-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Summary drops below the step content and stops sticking once stacked. */
+  .checkout-layout { grid-template-columns: minmax(0, 1fr); }
+  .checkout-summary { position: static; }
   .how-grid { gap: 24px; }
   .how-grid li { gap: 12px; }
   .how-grid li + li { padding-left: 20px; }
@@ -274,6 +322,8 @@
   .detail-grid { grid-template-columns: 1fr; gap: 28px; }
   .checkout-steps { gap: 8px; }
   .checkout-step + .checkout-step::before { width: 28px; }
+  .checkout-panel { padding: 22px 18px; }
+  .checkout-fields { grid-template-columns: 1fr; gap: 16px; }
 }
 @media (max-width: 479px) {
   .checkout-step-label { display: none; }

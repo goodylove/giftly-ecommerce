@@ -24,7 +24,8 @@ export function CartLineItem({ item, compact }: { item: CartItem; compact?: bool
       transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
       className="flex items-start gap-3 overflow-hidden p-2"
     >
-      <CardArtwork card={card} compact className="aspect-square w-14 shrink-0 rounded-lg" />
+      {/* No aspect-square here — the artwork is 29:18, and squaring it crops the logo. */}
+      <CardArtwork card={card} compact className="w-16 shrink-0 rounded-lg" />
 
       <div className="min-w-0 flex-1">
         {/* Row 1: identity + remove — its own row so a category badge never fights the price/stepper for space. */}

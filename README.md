@@ -1,59 +1,211 @@
-# Giftly homepage
+# Giftly
 
-A frontend gift-card storefront built with Next.js App Router, TypeScript,
-Tailwind CSS v4, shadcn/ui with Base UI primitives, and Phosphor icons.
+A digital gift-card storefront for the Nigerian market. Shoppers browse cards from
+brands they know, pick a denomination, and pay through Paystack; the order is recorded
+in Postgres and only marked paid once the transaction has been verified server-side.
 
-## Run locally
+Built with the Next.js App Router, TypeScript, Tailwind CSS v4, Supabase and Paystack.
 
-From the `giftly` directory, run `pnpm install` and `pnpm dev`, then open
-http://localhost:3000. Use `pnpm build` and `pnpm start` for a production preview.
+---
 
-## Structure
+## Features
 
-- `app/page.tsx` composes the homepage sections as a Server Component.
-- `app/layout.tsx` owns metadata, the local Geist font, and the shared site shell.
-- `components/home/` contains the hero, interactive collection, and how-it-works section.
-- `components/gift-cards/card-artwork.tsx` supplies reusable, scalable brand artwork.
-- `components/layout/` contains the shared header and footer.
-- `components/ui/` contains shadcn-style Button and Dialog primitives built on Base UI.
-- `lib/gift-cards.ts` holds typed demo catalogue data and naira formatting.
-- `app/globals.css` holds the theme tokens and custom artwork/responsive styling.
+**Storefront**
+- Catalogue with client-side search and category filtering
+- Category tiles that preselect the matching filter via shared context
+- Per-brand denomination picker — the amount is chosen explicitly, never inferred
+- Cart with per-denomination line items, persisted to `localStorage`
 
-Client rendering is limited to the navigation dialogs and interactive catalogue.
-Category filters and previews operate locally. The dialogs use Base UI focus
-management, keyboard dismissal, and accessible titles. Motion respects the
-system's reduced-motion preference.
+**Checkout**
+- Two-step flow (delivery details → review) with a persistent order summary
+- Zod-validated API boundary
+- Paystack hosted checkout via redirect
+- Server-side verification before an order is marked paid
+- Failed or abandoned payments leave the cart intact so the shopper can retry
 
-## Visual conventions
+---
 
-Shared theme tokens in `app/globals.css` define neutral surfaces, the warm brand
-accent, spacing, and corner radii. Standard buttons are 44px tall, primary hero
-and banner links use the same 48px large variant, and only filter controls use
-the pill shape. Keep these rules in `components/ui/button.tsx` instead of adding
-individual size or radius overrides. Dialog titles and descriptions also have
-shared defaults. Main sections use 64px vertical spacing on mobile and 80px on
-larger screens; cards use 24px content padding and 16px corners. Brand artwork
-keeps its own colours within the neutral interface.
+## Tech stack
 
-## Review scope
+| Area | Choice |
+| --- | --- |
+| Framework | Next.js 16 (App Router, React 19) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 (`@theme`, no config file) + design tokens in `globals.css` |
+| UI primitives | Base UI (`@base-ui/react`) — dialog, sheet, accordion, radio group |
+| Icons | Phosphor |
+| Animation | Framer Motion |
+| Database | Supabase (Postgres) |
+| Payments | Paystack |
+| Validation | Zod |
+| Package manager | pnpm |
 
-This phase implements the homepage only. The product buttons open previews;
-the cart shows an empty state. Product, cart, and checkout pages, purchases,
-email delivery, authentication, and payment integrations are not implemented.
-Catalogue prices are demonstration content. Brand artwork is illustrative.
+---
 
-Geist is bundled locally from the existing project's font cache, so builds do
-not require a Google Fonts request. Upstream font and licensing information:
-https://github.com/vercel/geist-font
+## Getting started
 
-## Checks
+**Prerequisites:** Node 20+, pnpm, a Supabase project, and a Paystack account.
 
-```sh
-pnpm exec tsc --noEmit
-pnpm lint
-pnpm build
+```bash
+pnpm install
+pnpm dev
 ```
 
-For visual review, check the page at mobile, tablet, and desktop widths. Try each
-category filter, open and dismiss every card preview, and open the empty cart.
-Check keyboard focus, Escape dismissal, and reduced-motion behaviour.
+Then open http://localhost:3000.
+
+### Environment
+
+Create `.env.local` in the project root:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
+SUPABASE_SECRET_KEY=<supabase service role key>   # server-only
+PAYSTACK_SECRET_KEY=<sk_test_... or sk_live_...>  # server-only
+NEXT_PUBLIC_APP_URL=http://localhost:3000         # Paystack redirects back here
+```
+
+`NEXT_PUBLIC_APP_URL` must match the origin you're serving from — Paystack uses it to
+build the `callback_url` it returns the shopper to after payment.
+
+### Database
+
+The app expects two tables:
+
+```sql
+create table orders (
+  id                uuid primary key default gen_random_uuid(),
+  customer_name     text        not null,
+  customer_email    text        not null,
+  total_amount_kobo integer     not null,
+  payment_status    text        not null default 'pending', -- pending | paid | failed
+  payment_reference text        unique,
+  created_at        timestamptz not null default now()
+);
+
+create table order_items (
+  id              uuid primary key default gen_random_uuid(),
+  order_id        uuid    not null references orders(id) on delete cascade,
+  product_id      text    not null,
+  product_name    text    not null,
+  quantity        integer not null,
+  unit_price_kobo integer not null
+);
+```
+
+Amounts are stored in **kobo** (integer minor units) rather than naira decimals —
+Paystack expects kobo, and integers avoid floating-point rounding on money.
+
+---
+
+## Payment flow
+
+```
+Cart → POST /api/checkout → Paystack hosted page → /checkout/success
+                 │                                        │
+                 │                                        └─ GET /api/checkout/verify
+                 └─ creates order (pending) + order_items     ├─ asks Paystack for truth
+                    returns authorization_url                 ├─ updates payment_status
+                                                              └─ cart cleared only on success
+```
+
+1. **`POST /api/checkout`** validates the payload with Zod, rejects any denomination not
+   listed for that product in the server-side catalogue, computes the order total itself,
+   writes the order as `pending`, and initialises a Paystack transaction.
+2. **Paystack** handles the payment and redirects back to `/checkout/success`.
+3. **`GET /api/checkout/verify`** is the only thing that can mark an order paid. It
+   calls Paystack's verify endpoint using the secret key and compares the returned
+   amount against the stored total.
+
+Three details worth pointing out:
+
+- **The client never sends a price.** The request carries only `productId`,
+  `denomination` and `quantity` — there is no price or total field to tamper with. The
+  denomination is checked against the catalogue before any money is calculated.
+- **Verification is idempotent.** Once an order is `paid` or `failed` the route returns
+  the stored result without calling Paystack again, so reloading the success page can't
+  flip an outcome or double-count.
+- **Transient failures don't corrupt state.** If Paystack is unreachable the order stays
+  `pending` and returns a 502, so it remains reconcilable on a later visit rather than
+  being wrongly marked failed.
+
+---
+
+## Notable implementation details
+
+**Cart identity.** Line items are keyed by `(id, denomination)`, not brand alone — the
+same card at ₦5,000 and ₦20,000 is two distinct lines. Quantity changes and removals
+match on both fields (`isSameLine` in `lib/cart.tsx`).
+
+**Cart lifetime.** The cart is deliberately *not* cleared when the shopper leaves for
+Paystack. It's cleared on `/checkout/success` only after verification succeeds, so a
+declined card or an abandoned payment doesn't wipe their basket.
+
+**Hydration-safe motion.** `prefers-reduced-motion` can't be known during SSR, so
+branching on `useReducedMotion()` in render produces a different tree on the client and
+breaks hydration. Instead a single `<MotionConfig reducedMotion="user">`
+(`components/ui/motion-provider.tsx`) wraps the app: one DOM tree everywhere, with
+Framer suppressing transform and layout animation for users who ask for it.
+
+**No-JS safety net.** Framer serialises its `initial` state into inline styles during
+SSR, which would leave scroll-revealed sections permanently invisible without
+JavaScript. A `<noscript>` rule in the root layout forces `[data-reveal]` and
+`[data-page-transition]` visible.
+
+**Rendering.** Every page prerenders as static HTML; only the cart, catalogue filter,
+checkout and hero interactions are client components. `useSearchParams` on the success
+page sits behind a `<Suspense>` boundary so the route keeps its static shell.
+
+**Accessibility.** Interactive primitives come from Base UI, so roles, `aria-expanded`
+and keyboard navigation are handled by the library rather than reimplemented. Sections
+are labelled with `aria-labelledby`, the denomination picker is a real radio group, and
+form fields carry `autoComplete` and described-by hints.
+
+---
+
+## Project structure
+
+```
+app/
+  page.tsx                    storefront (server component)
+  gift-cards/[id]/            product detail, statically generated per brand
+  cart/  checkout/            cart and two-step checkout
+  checkout/success/           post-payment verification screen
+  api/checkout/               order creation
+  api/checkout/verify/        server-side payment verification
+  globals.css                 design tokens + component styles
+components/
+  home/                       storefront sections
+  cart/  checkout/            cart and checkout UI
+  gift-cards/                 artwork, denomination picker, add-to-cart
+  ui/                         Base UI wrappers + motion primitives
+lib/
+  cart.tsx                    cart reducer and localStorage persistence
+  gift-cards.ts               catalogue and naira formatting
+  paystack/paystack.ts        initialise + verify transactions
+  supabase/server.ts          server-only Supabase client
+  api/checkout-client.ts      typed client for the checkout endpoints
+```
+
+---
+
+## Scripts
+
+```bash
+pnpm dev      # development server
+pnpm build    # production build
+pnpm start    # serve the production build
+pnpm lint     # eslint
+```
+
+---
+
+## Known gaps
+
+- **No Paystack webhook yet.** Verification runs when the shopper's browser returns to
+  `/checkout/success`. If they pay and close the tab before the redirect completes, the
+  order stays `pending` with nothing to reconcile it. A signed webhook endpoint is the
+  fix and needs a public HTTPS URL to register against.
+- **The gift message isn't persisted.** It's collected at checkout but has no field in
+  the checkout schema or the `orders` table, so it's currently dropped.
+- **`/api/test-db`** is an unauthenticated debug route that returns raw `orders` rows.
+  It should be removed or protected before deploying.

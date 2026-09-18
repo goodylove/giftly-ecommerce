@@ -38,15 +38,10 @@ export function Hero() {
             <a href="#gift-cards" className={buttonVariants({ size: "lg" })}>
               Browse gift cards <ArrowRightIcon />
             </a>
-            <span className="hero-meta">
-              {giftCards.length} brands · from {formatNaira(lowestAmount)}
-            </span>
+
           </div>
 
-          <p className="hero-note">
-            <ShieldCheckIcon size={15} weight="fill" aria-hidden="true" />
-            Paystack-secured checkout · delivered by email · codes never expire
-          </p>
+
         </div>
 
         <HeroCards cards={heroCards} />

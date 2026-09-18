@@ -69,7 +69,7 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col-reverse items-center gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:justify-between">
           <p>© 2026 Giftly. All rights reserved.</p>
-          <p>Portfolio demo — brands shown are for illustration and no real gift cards are issued.</p>
+          {/* <p>Portfolio demo — brands shown are for illustration and no real gift cards are issued.</p> */}
         </div>
       </div>
     </footer>
