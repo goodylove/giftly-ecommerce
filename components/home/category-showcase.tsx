@@ -58,21 +58,20 @@ export function CategoryShowcase() {
             return (
               <Reveal key={category.name} delay={index * 70}>
                 <CategoryTileLink category={category.name}>
-                  <span className="category-tile-stack" aria-hidden="true">
-                    {cards.slice(0, 3).map((card) => (
-                      <CardArtwork key={card.id} card={card} compact />
-                    ))}
+                  <span className="category-tile-media" aria-hidden="true">
+                    <span className="category-tile-deck">
+                      {cards.slice(0, 3).map((card) => (
+                        <CardArtwork key={card.id} card={card} compact />
+                      ))}
+                    </span>
                   </span>
                   <span className="category-tile-body">
-                    <span className="category-tile-top">
-                      <span className="how-icon">
-                        <Icon size={20} />
+                    <span className="category-tile-head">
+                      <span className="category-tile-icon">
+                        <Icon size={15} weight="bold" />
                       </span>
-                      <span className="category-tile-count">
-                        {cards.length} {cards.length === 1 ? "card" : "cards"}
-                      </span>
+                      <span className="category-tile-name">{category.name}</span>
                     </span>
-                    <span className="category-tile-name">{category.name}</span>
                     <span className="category-tile-blurb">{category.blurb}</span>
                     <span className="category-tile-link">
                       Browse {category.name.toLowerCase()}

@@ -15,7 +15,7 @@ export default function Home() {
     <>
       <Hero />
       <BrandStrip />
-      <HowItWorks />
+      {/* <HowItWorks /> */}
       <CategoryFilterProvider>
         <CategoryShowcase />
         <GiftCardCollection />
