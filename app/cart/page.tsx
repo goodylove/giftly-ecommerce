@@ -18,7 +18,7 @@ export default function CartPage() {
       <h1 className="section-heading">Your cart</h1>
 
       {items.length === 0 ? (
-        <div className="mx-auto mt-10 max-w-md">
+        <div className="mx-auto mt-30 max-w-md ">
           <EmptyCart />
         </div>
       ) : (

@@ -14,7 +14,7 @@ export function SiteHeader() {
     <header className="border-b border-border bg-background">
       <div className="page-container flex h-22 items-center justify-between gap-4">
         <Link href="/" aria-label="Giftly home" className="wordmark">
-          giftly<span className="text-brand">.</span>
+          Giftly<span className="text-brand">.</span>
         </Link>
         <nav
           aria-label="Main navigation"
@@ -22,9 +22,6 @@ export function SiteHeader() {
         >
           <Link href="/#gift-cards" className="nav-link">
             Browse<span className="hidden sm:inline">&nbsp;gift cards</span>
-          </Link>
-          <Link href="/#how-it-works" className="nav-link hidden md:inline-flex">
-            How it works
           </Link>
           <Link href="/#faq" className="nav-link hidden md:inline-flex">
             FAQ

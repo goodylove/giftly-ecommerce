@@ -13,6 +13,7 @@ export function Hero() {
     <section aria-labelledby="hero-heading" className="hero-section">
       <div className="page-container hero-grid">
         <div className="hero-copy">
+
           <h1 id="hero-heading">
             The gift they&apos;ll{" "}
             <span className="hero-mark">
@@ -38,7 +39,6 @@ export function Hero() {
             <a href="#gift-cards" className={buttonVariants({ size: "lg" })}>
               Browse gift cards <ArrowRightIcon />
             </a>
-
           </div>
 
 

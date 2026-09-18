@@ -8,6 +8,7 @@ import { CartLineItem } from "@/components/cart/cart-line-item";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { SuccessConfetti } from "@/components/ui/success-confetti";
 import { type CartItem } from "@/lib/cart";
 import { formatNaira, type GiftCardBrand } from "@/lib/gift-cards";
 import { cn } from "@/lib/utils";
@@ -96,6 +97,7 @@ export function CheckoutSuccessContent() {
 
   return (
     <section className="page-container py-10 md:py-16">
+      <SuccessConfetti />
       <motion.div key="success" {...stateMotion} className="mx-auto max-w-lg text-center">
         <motion.div
           initial={{ scale: 0.6, opacity: 0 }}
@@ -109,9 +111,29 @@ export function CheckoutSuccessContent() {
           Thank you, {firstName} — your gift is on its way.
         </h1>
         <p className="mt-3 text-sm leading-6 text-muted-foreground">
-          Order <Badge variant="outline">{order.orderId}</Badge> is confirmed.
+          We&apos;ve received your payment — here&apos;s what&apos;s on its way.
         </p>
-        <div className="mt-8 rounded-2xl border border-border bg-card p-6 text-left">
+
+        <div className="order-summary-panel">
+          <div className="order-summary-row">
+            <span>Order ID</span>
+            <span>{order.orderId}</span>
+          </div>
+          <div className="order-summary-row">
+            <span>Reference</span>
+            <span>{order.reference}</span>
+          </div>
+          <div className="order-summary-row">
+            <span>Payment method</span>
+            <span>Paystack</span>
+          </div>
+          <div className="order-summary-row">
+            <span>Status</span>
+            <Badge variant="brand">Paid</Badge>
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-2xl border border-border bg-card p-6 text-left">
           <ul className="flex flex-col gap-4">
             {lineItems.map((item, index) => (
               <CartLineItem key={`${item.id}-${item.denomination}-${index}`} item={item} compact />
@@ -123,9 +145,18 @@ export function CheckoutSuccessContent() {
             <span>{formatNaira(order.amountKobo / 100)}</span>
           </div>
         </div>
-        <Link href="/" className={cn(buttonVariants({ size: "lg" }), "mt-8 w-full")}>
-          Back to shopping
-        </Link>
+
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Link href="/" className={cn(buttonVariants({ size: "lg" }), "sm:flex-[1.6]")}>
+            Back to shopping
+          </Link>
+          <a
+            href="mailto:hello@giftly.example"
+            className={cn(buttonVariants({ size: "lg", variant: "outline" }), "sm:flex-1")}
+          >
+            Need help?
+          </a>
+        </div>
       </motion.div>
     </section>
   );

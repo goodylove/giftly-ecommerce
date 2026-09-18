@@ -35,7 +35,7 @@ export function NewsletterForm() {
       </div>
       {submitted && (
         <p role="status" className="mt-2 text-xs text-muted-foreground">
-          Thanks — this is a portfolio demo, so nothing was actually sent.
+          Thanks for subscribing! You&apos;ll receive an email when we add new brands.
         </p>
       )}
     </form>

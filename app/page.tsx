@@ -5,7 +5,6 @@ import { CtaBand } from "@/components/home/cta-band";
 import { Faq } from "@/components/home/faq";
 import { GiftCardCollection } from "@/components/home/gift-card-collection";
 import { Hero } from "@/components/home/hero";
-import { HowItWorks } from "@/components/home/how-it-works";
 import { StatsBand } from "@/components/home/stats-band";
 import { Testimonials } from "@/components/home/testimonials";
 import { WhyGiftly } from "@/components/home/why-giftly";
@@ -15,7 +14,6 @@ export default function Home() {
     <>
       <Hero />
       <BrandStrip />
-      {/* <HowItWorks /> */}
       <CategoryFilterProvider>
         <CategoryShowcase />
         <GiftCardCollection />

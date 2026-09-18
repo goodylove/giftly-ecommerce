@@ -97,7 +97,7 @@ export default function CheckoutComponent() {
               <motion.div key="step-1" {...stepMotion} className="checkout-panel">
                 <div className="checkout-panel-head">
                   <h2>Delivery details</h2>
-                  <p>Gift cards are delivered by email — there&apos;s no shipping address to enter.</p>
+                  {/* <p>Gift cards are delivered by email — there&apos;s no shipping address to enter.</p> */}
                 </div>
 
                 <div className="checkout-fields">
@@ -122,9 +122,9 @@ export default function CheckoutComponent() {
                       autoComplete="email"
                       aria-describedby="senderEmail-hint"
                     />
-                    <p id="senderEmail-hint" className="field-hint">
+                    {/* <p id="senderEmail-hint" className="field-hint">
                       We send the gift code and receipt here.
-                    </p>
+                    </p> */}
                   </div>
                   <div className="field field--full">
                     <label htmlFor="message">

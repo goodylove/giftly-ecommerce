@@ -86,6 +86,10 @@ export function GiftCardCollection() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search gift cards"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
             className="pr-11 pl-10 [&::-webkit-search-cancel-button]:appearance-none"
           />
           {query && (

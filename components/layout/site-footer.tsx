@@ -14,7 +14,6 @@ const FOOTER_COLUMNS = [
   {
     title: "Company",
     links: [
-      { label: "How it works", href: "/#how-it-works" },
       { label: "Why Giftly", href: "/#gift-cards" },
       { label: "Reviews", href: "/#gift-cards" },
     ],
@@ -35,7 +34,7 @@ export function SiteFooter() {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
           <div className="max-w-sm">
             <Link href="/" aria-label="Giftly home" className="wordmark">
-              giftly<span className="text-brand">.</span>
+              Giftly<span className="text-brand">.</span>
             </Link>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
               Digital gift cards for every occasion — delivered straight to their inbox in minutes.

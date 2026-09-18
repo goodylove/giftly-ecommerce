@@ -40,6 +40,10 @@ export async function initializePaystackTransaction({
   }
 }
 
+// Distinct from a generic Error so callers can tell "Paystack itself failed us"
+// (worth a 502 + "try again") apart from an unrelated bug (worth a plain 500).
+export class PaystackVerificationError extends Error {}
+
 export async function verifyPaystackTransaction(reference: string) {
   try {
     const response = await fetch(
@@ -54,7 +58,7 @@ export async function verifyPaystackTransaction(reference: string) {
     const data = await response.json();
 
     if (!response.ok || !data.status) {
-      throw new Error(
+      throw new PaystackVerificationError(
         `Failed to verify Paystack transaction: ${data.message}`,
       );
     }
@@ -62,6 +66,10 @@ export async function verifyPaystackTransaction(reference: string) {
     return data.data as { status: string; amount: number; reference: string };
   } catch (error) {
     console.error("Error verifying Paystack transaction:", error);
-    throw error;
+    throw error instanceof PaystackVerificationError
+      ? error
+      : new PaystackVerificationError(
+          error instanceof Error ? error.message : "Could not reach Paystack",
+        );
   }
 }
