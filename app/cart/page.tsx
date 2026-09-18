@@ -4,9 +4,10 @@ import { CartLineItem } from "@/components/cart/cart-line-item";
 import { EmptyCart } from "@/components/cart/empty-cart";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useCart } from "@/lib/cart";
+
 import { formatNaira } from "@/lib/gift-cards";
 import { cn } from "@/lib/utils";
+import { useCart } from "../context/cartProvider";
 
 export default function CartPage() {
   const { items, subtotal } = useCart();

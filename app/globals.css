@@ -190,8 +190,6 @@
   .category-tab--active { color: var(--foreground); border-bottom-color: var(--foreground); font-weight: 500; }
   .category-tab:focus-visible { outline-offset: -3px; }
   .catalogue-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 24px; }
-  .catalogue-card-wrap { position: relative; }
-  .catalogue-card-add { position: absolute; top: 12px; left: 12px; z-index: 1; }
   .catalogue-card { display: block; width: 100%; border: 0; border-radius: var(--radius); background: transparent; text-align: left; }
   .catalogue-card-image { position: relative; display: block; overflow: hidden; border-radius: var(--radius); }
   .gift-artwork { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 29 / 18; width: 100%; overflow: hidden; border-radius: var(--radius); background: #f1f2f4; }

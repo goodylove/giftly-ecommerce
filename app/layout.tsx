@@ -3,8 +3,9 @@ import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
-import { CartProvider } from "@/lib/cart";
+
 import "./globals.css";
+import { CartProvider } from "./context/cartProvider";
 
 const geistSans = localFont({
   src: "./fonts/geist-latin.woff2",

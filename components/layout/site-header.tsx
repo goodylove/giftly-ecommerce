@@ -4,7 +4,7 @@ import { ShoppingBagIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { CartSheet } from "@/components/cart/cart-sheet";
-import { useCart } from "@/lib/cart";
+import { useCart } from "@/app/context/cartProvider";
 
 export function SiteHeader() {
   const { count } = useCart();
@@ -22,7 +22,7 @@ export function SiteHeader() {
           <Link href="/#gift-cards" className="nav-link">
             Browse<span className="hidden sm:inline"> gift cards</span>
           </Link>
-         
+
           <span
             className="hidden h-5 w-px bg-border sm:block"
             aria-hidden="true"

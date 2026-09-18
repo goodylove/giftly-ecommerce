@@ -3,8 +3,9 @@ import { MinusIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
 import { CardArtwork } from "@/components/gift-cards/card-artwork";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useCart, type CartItem } from "@/lib/cart";
+import { type CartItem } from "@/lib/cart";
 import { formatNaira, getGiftCard } from "@/lib/gift-cards";
+import { useCart } from "@/app/context/cartProvider";
 
 export function CartLineItem({ item, compact }: { item: CartItem; compact?: boolean }) {
   const { setQuantity, remove } = useCart();

@@ -10,9 +10,10 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { useCart, type CartItem } from "@/lib/cart";
+import { type CartItem } from "@/lib/cart";
 import { formatNaira } from "@/lib/gift-cards";
 import { cn } from "@/lib/utils";
+import { useCart } from "../context/cartProvider";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -242,7 +243,6 @@ export default function CheckoutPage() {
                 </label>
               ))}
             </RadioGroup>
-            <p className="mt-3 text-xs text-muted-foreground">Demo checkout — no real payment is charged.</p>
 
             <Separator className="my-5" />
 

@@ -5,9 +5,9 @@ import { CartLineItem } from "@/components/cart/cart-line-item";
 import { EmptyCart } from "@/components/cart/empty-cart";
 import { SheetBody, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useCart } from "@/lib/cart";
 import { formatNaira } from "@/lib/gift-cards";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/app/context/cartProvider";
 
 export function CartSheet() {
   const { items, count, subtotal } = useCart();
@@ -44,11 +44,13 @@ export function CartSheet() {
           </div>
           {/* <p className="mt-1 text-xs text-muted-foreground">Delivery — sent by email, free.</p> */}
           <SheetClose
+            nativeButton={false}
             render={<Link href="/checkout" className={cn(buttonVariants({ size: "lg" }), "mt-4 w-full")} />}
           >
             Checkout — {formatNaira(subtotal)}
           </SheetClose>
           <SheetClose
+            nativeButton={false}
             render={
               <Link href="/#gift-cards" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "mt-2 w-full")} />
             }

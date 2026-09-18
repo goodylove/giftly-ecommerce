@@ -17,7 +17,7 @@ export function EmptyCart({ closesSheet }: { closesSheet?: boolean } = {}) {
         Your cart is empty. Explore the collection and find a gift that feels just right.
       </p>
       {closesSheet ? (
-        <SheetClose render={<Link href="/#gift-cards" className={ctaClassName} />}>
+        <SheetClose nativeButton={false} render={<Link href="/#gift-cards" className={ctaClassName} />}>
           Explore gift cards <ArrowRightIcon />
         </SheetClose>
       ) : (

@@ -2,7 +2,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowUpRightIcon, MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
-import { AddToCartButton } from "@/components/gift-cards/add-to-cart-button";
 import { CardArtwork } from "@/components/gift-cards/card-artwork";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,8 +15,11 @@ import {
 import { cn } from "@/lib/utils";
 
 function GiftCardItem({ card }: { card: GiftCard }) {
+  const amounts = card.denominations ?? [card.startingPrice];
+  const min = Math.min(...amounts);
+  const max = Math.max(...amounts);
   return (
-    <article className="catalogue-card-wrap">
+    <article>
       <Link href={`/gift-cards/${card.id}`} className="catalogue-card group" aria-label={`View ${card.name}`}>
         <span className="catalogue-card-image">
           <CardArtwork card={card} />
@@ -28,11 +30,12 @@ function GiftCardItem({ card }: { card: GiftCard }) {
         <span className="catalogue-card-info">
           <span className="catalogue-card-name">{card.name}</span>
           <span className="catalogue-card-price">
-            From {formatNaira(card.startingPrice)}
+            {min === max
+              ? formatNaira(min)
+              : `${formatNaira(min)} – ${formatNaira(max)}`}
           </span>
         </span>
       </Link>
-      <AddToCartButton card={card} compact className="catalogue-card-add" />
     </article>
   );
 }
