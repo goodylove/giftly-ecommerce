@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { AnimatePresence } from "framer-motion";
 import { CartLineItem } from "@/components/cart/cart-line-item";
 import { EmptyCart } from "@/components/cart/empty-cart";
 import { buttonVariants } from "@/components/ui/button";
@@ -23,9 +24,11 @@ export default function CartPage() {
       ) : (
         <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_320px]">
           <ul className="flex flex-col gap-6">
-            {items.map((item) => (
-              <CartLineItem key={`${item.id}-${item.denomination}`} item={item} />
-            ))}
+            <AnimatePresence initial={false}>
+              {items.map((item) => (
+                <CartLineItem key={`${item.id}-${item.denomination}`} item={item} />
+              ))}
+            </AnimatePresence>
           </ul>
 
           <div className="h-fit rounded-2xl border border-border bg-card p-6">

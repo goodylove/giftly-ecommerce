@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
 import { CheckCircleIcon, CircleNotchIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { CartLineItem } from "@/components/cart/cart-line-item";
 import { Badge } from "@/components/ui/badge";
@@ -43,13 +44,20 @@ export function CheckoutSuccessContent() {
     });
   }, [reference, clear]);
 
+  // Each state gets its own key so switching between them replays the entrance.
+  const stateMotion = {
+    initial: { opacity: 0, y: 12 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as const },
+  };
+
   if (status === "verifying") {
     return (
       <section className="page-container py-10 md:py-16">
-        <div className="mx-auto max-w-lg text-center">
+        <motion.div key="verifying" {...stateMotion} className="mx-auto max-w-lg text-center">
           <CircleNotchIcon size={28} className="mx-auto animate-spin text-muted-foreground" />
           <p className="mt-4 text-sm text-muted-foreground">Confirming your payment…</p>
-        </div>
+        </motion.div>
       </section>
     );
   }
@@ -57,7 +65,7 @@ export function CheckoutSuccessContent() {
   if (status === "failed") {
     return (
       <section className="page-container py-10 md:py-16">
-        <div className="mx-auto max-w-lg text-center">
+        <motion.div key="failed" {...stateMotion} className="mx-auto max-w-lg text-center">
           <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
             <WarningCircleIcon size={30} weight="duotone" />
           </div>
@@ -73,7 +81,7 @@ export function CheckoutSuccessContent() {
               Back to shopping
             </Link>
           </div>
-        </div>
+        </motion.div>
       </section>
     );
   }
@@ -88,10 +96,15 @@ export function CheckoutSuccessContent() {
 
   return (
     <section className="page-container py-10 md:py-16">
-      <div className="mx-auto max-w-lg text-center">
-        <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-xl bg-brand-soft text-brand">
+      <motion.div key="success" {...stateMotion} className="mx-auto max-w-lg text-center">
+        <motion.div
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 380, damping: 16, delay: 0.1 }}
+          className="mx-auto mb-6 flex size-16 items-center justify-center rounded-xl bg-brand-soft text-brand"
+        >
           <CheckCircleIcon size={30} weight="duotone" />
-        </div>
+        </motion.div>
         <h1 className="font-heading text-2xl font-semibold tracking-tight">
           Thank you, {firstName} — your gift is on its way.
         </h1>
@@ -113,7 +126,7 @@ export function CheckoutSuccessContent() {
         <Link href="/" className={cn(buttonVariants({ size: "lg" }), "mt-8 w-full")}>
           Back to shopping
         </Link>
-      </div>
+      </motion.div>
     </section>
   );
 }

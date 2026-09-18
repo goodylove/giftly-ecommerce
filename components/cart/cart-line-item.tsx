@@ -1,4 +1,5 @@
 "use client";
+import { motion } from "framer-motion";
 import { MinusIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
 import { CardArtwork } from "@/components/gift-cards/card-artwork";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,14 @@ export function CartLineItem({ item, compact }: { item: CartItem; compact?: bool
   const lineTotal = formatNaira(item.denomination * item.quantity);
 
   return (
-    <li className="flex items-start gap-3 p-2">
+    <motion.li
+      layout
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, x: 28, height: 0, paddingTop: 0, paddingBottom: 0, marginBottom: -24 }}
+      transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+      className="flex items-start gap-3 overflow-hidden p-2"
+    >
       <CardArtwork card={card} compact className="aspect-square w-14 shrink-0 rounded-lg" />
 
       <div className="min-w-0 flex-1">
@@ -78,6 +86,6 @@ export function CartLineItem({ item, compact }: { item: CartItem; compact?: bool
           )}
         </div>
       </div>
-    </li>
+    </motion.li>
   );
 }

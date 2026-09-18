@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
 import { CartLineItem } from "@/components/cart/cart-line-item";
 import { CheckoutSteps } from "@/components/checkout/checkout-steps";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -19,6 +20,12 @@ export default function CheckoutComponent() {
   const [details, setDetails] = useState<DeliveryDetails>(EMPTY_DETAILS);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const stepMotion = {
+    initial: { opacity: 0, x: 24 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -24 },
+    transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] as const },
+  };
 
   function updateDetail<K extends keyof DeliveryDetails>(key: K, value: DeliveryDetails[K]) {
     setDetails((current) => ({ ...current, [key]: value }));
@@ -75,8 +82,9 @@ export default function CheckoutComponent() {
       <CheckoutSteps currentStep={step} />
 
       <div className="mx-auto max-w-xl">
+        <AnimatePresence mode="wait" initial={false}>
         {step === 1 && (
-          <div className="rounded-2xl border border-border bg-card p-6">
+          <motion.div key="step-1" {...stepMotion} className="rounded-2xl border border-border bg-card p-6">
             <h2 className="text-sm font-semibold">Delivery details</h2>
             <p className="mt-1 text-xs text-muted-foreground">
               Gift cards are delivered by email — no shipping address needed.
@@ -129,11 +137,11 @@ export default function CheckoutComponent() {
             >
               Continue
             </Button>
-          </div>
+          </motion.div>
         )}
 
         {step === 2 && (
-          <div className="rounded-2xl border border-border bg-card p-6">
+          <motion.div key="step-2" {...stepMotion} className="rounded-2xl border border-border bg-card p-6">
             <h2 className="text-sm font-semibold">Order summary</h2>
             <ul className="mt-4 flex flex-col gap-4">
               {items.map((item) => (
@@ -146,11 +154,20 @@ export default function CheckoutComponent() {
               <span>{formatNaira(subtotal)}</span>
             </div>
 
-            {submitError && (
-              <p role="alert" className="mt-4 text-sm text-destructive">
-                {submitError}
-              </p>
-            )}
+            <AnimatePresence>
+              {submitError && (
+                <motion.p
+                  role="alert"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.22 }}
+                  className="overflow-hidden text-sm text-destructive"
+                >
+                  <span className="mt-4 block">{submitError}</span>
+                </motion.p>
+              )}
+            </AnimatePresence>
 
             <div className="mt-6 flex gap-3">
               <Button
@@ -167,8 +184,9 @@ export default function CheckoutComponent() {
                 {isSubmitting ? "Redirecting to payment..." : "Place order"}
               </Button>
             </div>
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
       </div>
     </section>
   );

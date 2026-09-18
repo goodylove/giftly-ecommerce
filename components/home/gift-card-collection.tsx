@@ -3,13 +3,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowUpRightIcon, MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import { CardArtwork } from "@/components/gift-cards/card-artwork";
+import { useCategoryFilter } from "@/components/home/category-filter-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   categories,
   formatNaira,
   giftCards,
-  type CategoryFilter,
   type GiftCard,
 } from "@/lib/gift-cards";
 import { cn } from "@/lib/utils";
@@ -41,7 +41,8 @@ function GiftCardItem({ card }: { card: GiftCard }) {
 }
 
 export function GiftCardCollection() {
-  const [category, setCategory] = useState<CategoryFilter>("All cards");
+  // Shared with the "Shop by category" tiles so they can preselect a tab.
+  const { category, setCategory } = useCategoryFilter();
   const [query, setQuery] = useState("");
   const search = query.trim().toLocaleLowerCase("en");
   const visibleCards = giftCards.filter(
@@ -121,9 +122,9 @@ export function GiftCardCollection() {
             </button>
           ))}
         </div>
-        <span className="hidden shrink-0 text-xs text-muted-foreground sm:block">
-          {visibleCards.length} cards
-        </span>
+        {/* <span className="hidden shrink-0 text-xs text-muted-foreground sm:block">
+          {visibleCards.length} {visibleCards.length === 1 ? "card" : "cards"}
+        </span> */}
       </div>
       <p className="sr-only" role="status">
         {visibleCards.length} gift{" "}

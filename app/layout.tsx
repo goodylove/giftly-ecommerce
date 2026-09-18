@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { MotionProvider } from "@/components/ui/motion-provider";
 
 import "./globals.css";
 import { CartProvider } from "./context/cartProvider";
@@ -33,11 +34,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} ${poppins.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col">
-        <CartProvider>
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-        </CartProvider>
+        {/* Framer renders its `initial` state as inline styles during SSR, so without
+            this a no-JS visitor would be left looking at permanently hidden sections. */}
+        <noscript>
+          <style>{`[data-reveal],[data-page-transition]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
+        <MotionProvider>
+          <CartProvider>
+            <SiteHeader />
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+          </CartProvider>
+        </MotionProvider>
       </body>
     </html>
   );

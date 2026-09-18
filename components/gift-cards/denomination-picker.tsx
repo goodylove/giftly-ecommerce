@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { AddToCartButton } from "@/components/gift-cards/add-to-cart-button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { formatNaira, type GiftCard } from "@/lib/gift-cards";
@@ -12,8 +13,19 @@ export function DenominationPicker({ card }: { card: GiftCard }) {
     <div>
       <div className="detail-price-row">
         <span className="text-muted-foreground">Price</span>
-        <span className="font-semibold" aria-live="polite">
-          {formatNaira(denomination)}
+        <span className="relative overflow-hidden font-semibold" aria-live="polite">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={denomination}
+              initial={{ y: 14, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -14, opacity: 0 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="block"
+            >
+              {formatNaira(denomination)}
+            </motion.span>
+          </AnimatePresence>
         </span>
       </div>
 

@@ -5,6 +5,7 @@ import { ArrowLeftIcon } from "@phosphor-icons/react/ssr";
 import { CardArtwork } from "@/components/gift-cards/card-artwork";
 import { DenominationPicker } from "@/components/gift-cards/denomination-picker";
 import { Badge } from "@/components/ui/badge";
+import { Reveal } from "@/components/ui/reveal";
 import { getGiftCard, giftCards } from "@/lib/gift-cards";
 
 export function generateStaticParams() {
@@ -29,8 +30,10 @@ export default async function GiftCardDetailPage(props: PageProps<"/gift-cards/[
         <ArrowLeftIcon size={16} /> Back to gift cards
       </Link>
       <div className="detail-grid">
-        <CardArtwork card={card} className="detail-media" />
-        <div>
+        <Reveal>
+          <CardArtwork card={card} className="detail-media" />
+        </Reveal>
+        <Reveal delay={90}>
           <div className="detail-eyebrow">
             <Badge variant="brand">{card.category}</Badge>
             <span>Digital gift card</span>
@@ -38,7 +41,7 @@ export default async function GiftCardDetailPage(props: PageProps<"/gift-cards/[
           <h1 className="detail-title">{card.name}</h1>
           <p className="detail-description">{card.description}</p>
           <DenominationPicker card={card} />
-        </div>
+        </Reveal>
       </div>
     </section>
   );

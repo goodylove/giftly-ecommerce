@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { AnimatePresence } from "framer-motion";
 import { ShoppingBagIcon, XIcon } from "@phosphor-icons/react";
 import { CartLineItem } from "@/components/cart/cart-line-item";
 import { EmptyCart } from "@/components/cart/empty-cart";
@@ -29,9 +30,11 @@ export function CartSheet() {
           <EmptyCart closesSheet />
         ) : (
           <ul className="flex flex-col gap-6">
-            {items.map((item) => (
-              <CartLineItem key={`${item.id}-${item.denomination}`} item={item} />
-            ))}
+            <AnimatePresence initial={false}>
+              {items.map((item) => (
+                <CartLineItem key={`${item.id}-${item.denomination}`} item={item} />
+              ))}
+            </AnimatePresence>
           </ul>
         )}
       </SheetBody>
@@ -42,7 +45,6 @@ export function CartSheet() {
             <span className="text-muted-foreground">Subtotal</span>
             <span className="font-semibold">{formatNaira(subtotal)}</span>
           </div>
-          {/* <p className="mt-1 text-xs text-muted-foreground">Delivery — sent by email, free.</p> */}
           <SheetClose
             nativeButton={false}
             render={<Link href="/checkout" className={cn(buttonVariants({ size: "lg" }), "mt-4 w-full")} />}
