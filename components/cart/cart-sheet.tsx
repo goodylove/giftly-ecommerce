@@ -8,7 +8,7 @@ import { SheetBody, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTit
 import { Button, buttonVariants } from "@/components/ui/button";
 import { formatNaira } from "@/lib/gift-cards";
 import { cn } from "@/lib/utils";
-import { useCart } from "@/app/context/cartProvider";
+import { useCart } from "@/context/cartProvider";
 
 export function CartSheet() {
   const { items, count, subtotal } = useCart();

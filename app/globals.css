@@ -208,6 +208,17 @@
   .steam-wordmark--compact { gap: 4px; font-size: 9px; letter-spacing: 0.5px; }
   .steam-wordmark--compact svg { width: 16px; height: 16px; }
 
+  .brand-marquee { overflow: hidden; mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent); }
+  .brand-marquee-track { display: flex; align-items: center; width: max-content; animation: brand-marquee 28s linear infinite; }
+  .brand-marquee:hover .brand-marquee-track { animation-play-state: paused; }
+  .brand-mark { flex-shrink: 0; margin-right: 56px; font-family: var(--font-heading); font-size: 20px; font-weight: 700; letter-spacing: -0.4px; white-space: nowrap; color: var(--muted-foreground); transition: color 200ms; }
+  .brand-mark:hover { color: var(--foreground); }
+
+  @keyframes brand-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
   .detail-section { padding-block: 32px 72px; }
   .detail-back { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 24px; font-size: 13px; color: var(--muted-foreground); transition: color 160ms; }
   .detail-back:hover { color: var(--foreground); }

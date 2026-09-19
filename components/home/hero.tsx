@@ -14,7 +14,7 @@ export function Hero() {
       <div className="page-container hero-grid">
         <div className="hero-copy">
 
-          <h1 id="hero-heading">
+          <h1 id="hero-heading" className="tracking-[-0.2px] leading-[1.1] text-5xl md:text-6xl lg:text-7xl">
             The gift they&apos;ll{" "}
             <span className="hero-mark">
               actually

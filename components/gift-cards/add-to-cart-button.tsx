@@ -3,7 +3,8 @@ import { CheckIcon, ShoppingBagIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 
 import type { GiftCard } from "@/lib/gift-cards";
-import { useCart } from "@/app/context/cartProvider";
+import { useCart } from "@/context/cartProvider";
+import { useToast } from "@/components/ui/toast-provider";
 
 export function AddToCartButton({
   card,
@@ -15,6 +16,7 @@ export function AddToCartButton({
   className?: string;
 }) {
   const { add, items } = useCart();
+  const { showToast } = useToast();
   // Derived straight from live cart state (not a "just clicked" timer) — the button
   // stays "Added to cart" for as long as it actually is, and updates immediately on
   // every click, instead of flashing a confirmation that reverts while the item is
@@ -23,7 +25,15 @@ export function AddToCartButton({
   const label = quantity === 0 ? "Add to cart" : quantity === 1 ? "Added to cart" : `${quantity} in cart`;
 
   return (
-    <Button type="button" size="lg" className={className} onClick={() => add(card.id, denomination)}>
+    <Button
+      type="button"
+      size="lg"
+      className={className}
+      onClick={() => {
+        add(card.id, denomination);
+        showToast(`Added ${card.name} to cart`);
+      }}
+    >
       {quantity === 0 ? <ShoppingBagIcon /> : <CheckIcon weight="bold" />}
       {label}
     </Button>

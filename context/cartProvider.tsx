@@ -21,7 +21,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const [{ items, hydrated }, dispatch] = useReducer(reducer, { items: [], hydrated: false });
 
     // Read localStorage once on mount and fold the result into state via a single
-    // dispatch — this is the "subscribe to an external system" case effects are
+    // dispatch this is the "subscribe to an external system" case effects are
     // for, not a plain setState call, so it doesn't trigger cascading renders.
     useEffect(() => {
         dispatch({ type: "hydrate", items: readStoredCart() });

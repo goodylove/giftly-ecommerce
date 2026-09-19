@@ -1,5 +1,5 @@
 import { BrandStrip } from "@/components/home/brand-strip";
-import { CategoryFilterProvider } from "@/components/home/category-filter-context";
+import { CategoryFilterProvider } from "@/context/category-filter-context";
 import { CategoryShowcase } from "@/components/home/category-showcase";
 import { CtaBand } from "@/components/home/cta-band";
 import { Faq } from "@/components/home/faq";
