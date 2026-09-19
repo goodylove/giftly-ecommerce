@@ -62,10 +62,18 @@ NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
 SUPABASE_SECRET_KEY=<supabase service role key>   # server-only
 PAYSTACK_SECRET_KEY=<sk_test_... or sk_live_...>  # server-only
 NEXT_PUBLIC_APP_URL=http://localhost:3000         # Paystack redirects back here
+RESEND_API_KEY=<re_...>                           # server-only, order confirmation emails
+EMAIL_FROM="Giftly <orders@your-verified-domain>" # sender on a domain verified in Resend
+SUPPORT_EMAIL=<help@your-domain>                  # optional, shown in the email footer
 ```
 
 `NEXT_PUBLIC_APP_URL` must match the origin you're serving from — Paystack uses it to
 build the `callback_url` it returns the shopper to after payment.
+
+When an order flips to `paid`, `settleOrderPayment` emails the customer a confirmation
+through [Resend](https://resend.com). The email is sent once per order (only the request
+that wins the `pending → paid` update sends it), and a delivery failure is logged without
+affecting the payment. If `RESEND_API_KEY` or `EMAIL_FROM` is missing, no email is sent.
 
 ### Database
 
