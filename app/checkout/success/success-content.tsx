@@ -12,7 +12,7 @@ import { SuccessConfetti } from "@/components/ui/success-confetti";
 import { type CartItem } from "@/lib/cart";
 import { formatNaira, type GiftCardBrand } from "@/lib/gift-cards";
 import { cn } from "@/lib/utils";
-import { useCart } from "@/app/context/cartProvider";
+import { useCart } from "@/context/cartProvider";
 import { verifyCheckoutPayment, type VerifySuccessResponse } from "@/lib/api/checkout-client";
 
 type VerifyState = "verifying" | "success" | "failed";

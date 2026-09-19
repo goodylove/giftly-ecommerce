@@ -3,9 +3,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowUpRightIcon, MagnifyingGlassIcon, XIcon } from "@phosphor-icons/react";
 import { CardArtwork } from "@/components/gift-cards/card-artwork";
-import { useCategoryFilter } from "@/components/home/category-filter-context";
+import { useCategoryFilter } from "@/context/category-filter-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Reveal } from "@/components/ui/reveal";
 import {
   categories,
   formatNaira,
@@ -62,7 +63,7 @@ export function GiftCardCollection() {
       className="page-container catalogue-section scroll-mt-8"
     >
       <div className="catalogue-heading">
-        <div>
+        <Reveal>
           <h2 id="collection-heading" className="section-heading">
             Popular gift cards
           </h2>
@@ -70,7 +71,7 @@ export function GiftCardCollection() {
             For their next game, favourite playlist, or something on their wish
             list.
           </p>
-        </div>
+        </Reveal>
         <div className="relative w-full sm:w-64">
           <label htmlFor="gift-card-search" className="sr-only">
             Search gift cards
@@ -136,8 +137,10 @@ export function GiftCardCollection() {
       </p>
       {visibleCards.length ? (
         <div className="catalogue-grid">
-          {visibleCards.map((card) => (
-            <GiftCardItem key={card.id} card={card} />
+          {visibleCards.map((card, index) => (
+            <Reveal key={card.id} delay={index * 70}>
+              <GiftCardItem card={card} />
+            </Reveal>
           ))}
         </div>
       ) : (

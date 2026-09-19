@@ -4,9 +4,11 @@ import { Poppins } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MotionProvider } from "@/components/ui/motion-provider";
+import { PageLoader } from "@/components/ui/page-loader";
+import { ToastProvider } from "@/components/ui/toast-provider";
 
 import "./globals.css";
-import { CartProvider } from "./context/cartProvider";
+import { CartProvider } from "../context/cartProvider";
 
 const geistSans = localFont({
   src: "./fonts/geist-latin.woff2",
@@ -39,11 +41,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <noscript>
           <style>{`[data-reveal],[data-page-transition]{opacity:1!important;transform:none!important}`}</style>
         </noscript>
+        <PageLoader />
         <MotionProvider>
           <CartProvider>
-            <SiteHeader />
-            <main className="flex-1">{children}</main>
-            <SiteFooter />
+            <ToastProvider>
+              <SiteHeader />
+              <main className="flex-1">{children}</main>
+              <SiteFooter />
+            </ToastProvider>
           </CartProvider>
         </MotionProvider>
       </body>

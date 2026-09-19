@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { checkoutSchema } from "@/app/schemas/checkout.schema";
+import { checkoutSchema } from "@/schemas/checkout.schema";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { GiftCard, giftCards } from "@/lib/gift-cards";
 import { initializePaystackTransaction } from "@/lib/paystack/paystack";

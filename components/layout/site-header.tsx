@@ -5,7 +5,7 @@ import { ShoppingBagIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { CartSheet } from "@/components/cart/cart-sheet";
-import { useCart } from "@/app/context/cartProvider";
+import { useCart } from "@/context/cartProvider";
 
 export function SiteHeader() {
   const { count } = useCart();

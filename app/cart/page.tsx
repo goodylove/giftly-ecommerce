@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { formatNaira } from "@/lib/gift-cards";
 import { cn } from "@/lib/utils";
-import { useCart } from "../context/cartProvider";
+import { useCart } from "../../context/cartProvider";
 
 export default function CartPage() {
   const { items, subtotal } = useCart();
@@ -37,10 +37,7 @@ export default function CartPage() {
               <span className="text-muted-foreground">Subtotal</span>
               <span className="font-medium">{formatNaira(subtotal)}</span>
             </div>
-            <div className="mt-2 flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Delivery</span>
-              <span className="font-medium">Sent by email — free</span>
-            </div>
+
             <Separator className="my-4" />
             <div className="flex items-center justify-between text-base font-semibold">
               <span>Total</span>

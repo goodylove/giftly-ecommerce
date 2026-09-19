@@ -27,6 +27,7 @@ export function CardArtwork({
           src={card.imageSrc}
           alt=""
           fill
+          loading="eager"
           sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 300px"
           className="object-cover"
         />
