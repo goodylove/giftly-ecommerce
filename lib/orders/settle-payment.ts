@@ -1,5 +1,10 @@
 import "server-only";
 import { supabaseAdmin } from "@/lib/supabase/server";
+import {
+  buildOrderConfirmationEmail,
+  type OrderConfirmationInput,
+} from "@/lib/email/order-confirmation-email";
+import { sendEmail } from "@/lib/email/send-email";
 
 export interface OrderItemRow {
   product_id: string;
@@ -72,10 +77,49 @@ export async function settleOrderPayment({
   const { status, amount } = await verify();
   const isPaid = status === "success" && amount === order.total_amount_kobo;
 
-  await supabaseAdmin
+  // Only flip the row if it's still pending. If the verify route and the webhook
+  // race, exactly one of them gets a row back here — that one alone sends the
+  // confirmation email, so the customer is never emailed twice.
+  const { data: updated } = await supabaseAdmin
     .from("orders")
     .update({ payment_status: isPaid ? "paid" : "failed" })
-    .eq("id", order.id);
+    .eq("id", order.id)
+    .eq("payment_status", "pending")
+    .select("id");
+
+  if (isPaid && updated?.length) {
+    await sendOrderConfirmation({
+      to: order.customer_email as string,
+      customerName: base.customerName,
+      orderId: base.orderId,
+      reference,
+      items: base.items,
+      totalKobo: base.amountKobo,
+    });
+  }
 
   return { ...base, paymentStatus: isPaid ? "paid" : "failed" };
+}
+
+// A failed email must never fail or roll back a payment that has already been
+// recorded, so errors are logged and swallowed rather than thrown.
+async function sendOrderConfirmation({
+  to,
+  ...order
+}: { to: string } & Omit<OrderConfirmationInput, "paidAt">) {
+  try {
+    const { subject, html, text } = buildOrderConfirmationEmail({
+      ...order,
+      paidAt: new Date(),
+    });
+    await sendEmail({
+      to,
+      subject,
+      html,
+      text,
+      idempotencyKey: `order-confirmation/${order.orderId}`,
+    });
+  } catch (error) {
+    console.error(`Failed to send confirmation email for order ${order.orderId}:`, error);
+  }
 }
