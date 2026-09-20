@@ -107,7 +107,7 @@ export default function CheckoutComponent() {
                       id="senderName"
                       value={details.senderName}
                       onChange={(event) => updateDetail("senderName", event.target.value)}
-                      placeholder="Ada Lovelace"
+                      placeholder="Enter your name"
                       autoComplete="name"
                     />
                   </div>
