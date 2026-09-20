@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { type CartItem } from "@/lib/cart";
 import { formatNaira, getGiftCard } from "@/lib/gift-cards";
-import { useCart } from "@/app/context/cartProvider";
+import { useCart } from "@/context/cartProvider";
 
 export function CartLineItem({ item, compact }: { item: CartItem; compact?: boolean }) {
   const { setQuantity, remove } = useCart();

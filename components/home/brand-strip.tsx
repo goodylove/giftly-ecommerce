@@ -3,18 +3,18 @@ import { giftCards } from "@/lib/gift-cards";
 export function BrandStrip() {
   return (
     <div className="border-b border-border bg-card">
-      <div className="page-container flex flex-col items-center gap-4 py-6 sm:flex-row sm:justify-between">
-        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Redeemable at</p>
-        <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-          {giftCards.map((card) => (
-            <li
-              key={card.id}
-              className="text-sm font-semibold tracking-tight text-muted-foreground/70 transition-colors hover:text-foreground"
-            >
+      {/* Announced once for screen readers; the scrolling marquee below is decorative. */}
+      <p className="sr-only">
+        Redeemable at {giftCards.map((card) => card.brand).join(", ")}
+      </p>
+      <div className="brand-marquee page-container py-6" aria-hidden="true">
+        <div className="brand-marquee-track">
+          {[...giftCards, ...giftCards].map((card, index) => (
+            <span key={`${card.id}-${index}`} className="brand-mark">
               {card.brand}
-            </li>
+            </span>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

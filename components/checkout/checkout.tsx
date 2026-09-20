@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { formatNaira } from "@/lib/gift-cards";
 import { cn } from "@/lib/utils";
-import { useCart } from "@/app/context/cartProvider";
+import { useCart } from "@/context/cartProvider";
 import { DeliveryDetails, EMAIL_PATTERN, EMPTY_DETAILS } from "@/types/checkout.types";
 import { submitCheckout } from "@/lib/api/checkout-client";
 
@@ -262,10 +262,7 @@ export default function CheckoutComponent() {
             <span>Subtotal</span>
             <span>{formatNaira(subtotal)}</span>
           </div>
-          <div className="checkout-summary-row">
-            <span>Delivery</span>
-            <span className="text-brand">Free by email</span>
-          </div>
+
 
           <Separator className="my-4" />
 
